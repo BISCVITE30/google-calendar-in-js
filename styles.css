@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/* Error: expected "{".
+ *   ,
+ * 1 | <!DOCTYPE html>
+ *   |  ^
+ *   '
+ *   index.html 1:2  root stylesheet */
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono", "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: 'Error: expected "{".\a   ╷\a 1 │ <!DOCTYPE html>\d\a   │  ^\a   ╵\a   index.html 1:2  root stylesheet';
+}
+
+/*# sourceMappingURL=styles.css.map */
