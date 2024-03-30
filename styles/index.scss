@@ -1,11 +1,16 @@
-@import 'calendar.scss';
+@import 'page.scss';
 @import 'common.scss';
+@import 'navigation.scss';
+@import 'calendar.scss';
+@import 'timescale.scss';
 @import 'create-event.scss';
 @import 'event.scss';
-@import 'navigation.scss';
-@import 'page.scss';
-@import 'timescale.scss';
 
-html {
-  font-family: 'Roboto';
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
 }

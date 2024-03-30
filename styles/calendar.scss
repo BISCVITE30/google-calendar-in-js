@@ -1,1 +1,82 @@
 // стили сетки календаря и заголовка календаря с днями недели
+.calendar {
+  &__header {
+    display: flex;
+    margin-left: 48px;
+    margin-right: 19px;
+  }
+
+  &__vertical-line {
+    position: relative;
+    top: 80px;
+    border-left: 0.5px solid grey;
+    opacity: 0.5;
+    height: 20px;
+    color: grey;
+    background-color: grey;
+  }
+
+  &__day-label {
+    flex-grow: 1;
+    flex-basis: 129px;
+    min-width: 129px;
+    height: 100px;
+    opacity: 0.5;
+  }
+
+  &__body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+  &__week-container {
+    display: flex;
+    overflow-y: auto;
+    height: 79%;
+    width: 100%;
+  }
+
+  &__week {
+    display: flex;
+    flex-grow: 1;
+    margin-bottom: 30px;
+  }
+
+  &__day {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 1442px;
+    flex-basis: 129px;
+    min-width: 129px;
+    border: 1px solid #eee;
+    margin-bottom: 50px;
+  }
+
+  &__time-slot {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 0.5px solid #eee;
+    flex-grow: 1;
+    flex-basis: 129px;
+    height: 60px;
+  }
+}
+
+.day-label {
+  &__day-name {
+    height: 50%;
+    padding-top: 25px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 16px;
+  }
+
+  &__day-num {
+    height: 50%;
+    padding: 15px 0px 10px;
+    text-align: center;
+  }
+}
