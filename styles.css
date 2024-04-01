@@ -107,7 +107,6 @@
 .calendar__week {
   display: flex;
   flex-grow: 1;
-  margin-bottom: 30px;
 }
 .calendar__day {
   display: flex;
@@ -153,7 +152,7 @@
 .time-slot__time {
   position: relative;
   top: 48px;
-  left: 15px;
+  left: 14px;
   font-size: 12px;
 }
 

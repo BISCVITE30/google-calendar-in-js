@@ -7,6 +7,7 @@ const generateDay = () => {
   const timeSlots = createNumbersArray(1, 24).map((hour) => {
     const timeScaleElem = document.createElement('div');
     timeScaleElem.classList.add('calendar__time-slot');
+    timeScaleElem.setAttribute('data-hour-count', hour);
     timeScaleElem.innerHTML = '';
     return timeScaleElem;
   });
@@ -22,13 +23,13 @@ export const renderWeek = () => {
   weekDays.forEach((day) => {
     const dayElem = document.createElement('div');
     dayElem.classList.add('calendar__day');
-    dayElem.dataset.dayOfMonth = day; // Устанавливаем порядковый номер дня в месяце
+    dayElem.dataset.dayOfMonth = day; 
 
     const timeSlots = generateDay();
     timeSlots.forEach((timeSlot) => {
       dayElem.appendChild(timeSlot);
     });
-
+    
     calendarWeekElem.appendChild(dayElem);
   });
 

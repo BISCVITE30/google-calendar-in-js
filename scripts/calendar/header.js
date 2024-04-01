@@ -33,10 +33,11 @@ export const renderHeader = () => {
     dateContainer.setAttribute('date-data', dayOfMonth);
 
     dateContainer.append(dayOfWeek, numOfDay);
-    getHeader.append( dateContainer);
+    getHeader.append(dateContainer);
   });
   getItem(displayedWeekStart);
   setItem(displayedWeekStart, firstDayOfWeek);
 };
 // при клике на кнопку "Create" открыть модальное окно с формой для создания события
 // назначьте здесь обработчик
+openModal();
