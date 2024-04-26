@@ -10,14 +10,10 @@ let storage = {
 
 export const setItem = (key, value) => {
   // ф-ция должна устанавливать значения в объект storage
-  if (storage.hasOwnProperty(key)) {
-    return (storage[key] = value);
-  }
 };
 
 export const getItem = (key) => {
   // ф-ция должна возвращать по ключу значения из объекта storage
-  return { key };
 };
 
 // пример объекта события
