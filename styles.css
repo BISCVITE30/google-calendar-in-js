@@ -60,8 +60,12 @@
 
 .header {
   display: flex;
-  margin-top: 15px;
-  margin-left: 30px;
+  padding: 25px 0 10px 30px;
+}
+.header__line {
+  width: 100%;
+  opacity: 0.5;
+  margin: 0;
 }
 
 .button {
@@ -72,73 +76,88 @@
   border-radius: 10px;
 }
 
+.navigation__today-btn {
+  margin-left: 35px;
+}
+
 .calendar__header {
   display: flex;
   margin-left: 48px;
-  margin-right: 19px;
-}
-.calendar__vertical-line {
-  position: relative;
-  top: 80px;
-  border-left: 0.5px solid grey;
-  opacity: 0.5;
-  height: 20px;
-  color: grey;
-  background-color: grey;
 }
 .calendar__day-label {
   flex-grow: 1;
   flex-basis: 129px;
   min-width: 129px;
   height: 100px;
-  opacity: 0.5;
+  opacity: 0.7;
 }
 .calendar__body {
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
 }
 .calendar__week-container {
   display: flex;
-  overflow-y: auto;
+  overflow-y: scroll;
   height: 79%;
   width: 100%;
 }
+.calendar__week-container::-webkit-scrollbar {
+  display: none;
+}
 .calendar__week {
+  position: relative;
   display: flex;
   flex-grow: 1;
+  height: 1440px;
+  margin-bottom: 25px;
 }
 .calendar__day {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: 1442px;
+  height: 1440px;
   flex-basis: 129px;
   min-width: 129px;
   border: 1px solid #eee;
   margin-bottom: 50px;
 }
 .calendar__time-slot {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  border: 0.5px solid #eee;
+  border-bottom: 0.5px solid #eee;
   flex-grow: 1;
   flex-basis: 129px;
-  height: 60px;
 }
 
+.day-label {
+  display: flex;
+  flex-direction: column;
+}
 .day-label__day-name {
-  height: 50%;
-  padding-top: 25px;
-  text-align: center;
+  display: flex;
+  margin: auto;
   text-transform: uppercase;
   font-size: 16px;
 }
-.day-label__day-num {
-  height: 50%;
-  padding: 15px 0px 10px;
+.day-label__day-number {
+  display: flex;
+  margin: 0 auto 5px;
+  width: 40px;
+  height: 40px;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.day-name_current {
+  color: blue;
+}
+
+.day-number_current {
+  color: #fff;
+  background-color: blue;
+  border-radius: 50%;
 }
 
 .calendar__time-scale {
@@ -152,8 +171,9 @@
 .time-slot__time {
   position: relative;
   top: 48px;
-  left: 14px;
+  left: 12px;
   font-size: 12px;
+  opacity: 0.5;
 }
 
 * {

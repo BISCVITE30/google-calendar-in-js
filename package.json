@@ -7,15 +7,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrii142/gromcode-calendar-js.git"
+    "url": "https://github.com/BISCVITE30/google-calendar-in-js?tab=readme-ov-file"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/andrii142/gromcode-calendar-js/issues"
-  },
-  "homepage": "https://github.com/andrii142/gromcode-calendar-js#readme",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
