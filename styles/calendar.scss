@@ -50,6 +50,7 @@
 
   &__time-slot {
     display: flex;
+    position: relative;
     flex-direction: column;
     border-bottom: 0.5px solid #eee;
     flex-grow: 1;

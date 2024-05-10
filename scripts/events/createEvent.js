@@ -7,6 +7,11 @@ const eventFormElem = document.querySelector('.event-form');
 const childEventFormElem = eventFormElem.querySelectorAll('input, textarea');
 const closeEventFormBtn = document.querySelector('.create-event__close-btn');
 
+const generateUniqueId = () => {
+  const uniqueId = Math.random().toString(16).substr(2, 8);
+  return uniqueId;
+};
+
 function clearEventForm() {
   // ф-ция должна очистить поля формы от значений
   childEventFormElem.forEach((element) =>
@@ -18,7 +23,6 @@ function onCloseEventForm() {
   // здесь нужно закрыть модальное окно и очистить форму
   closeModal();
   clearEventForm();
-
 }
 
 const onCreateEvent = (event) => {
@@ -39,13 +43,13 @@ const onCreateEvent = (event) => {
     }),
     {}
   );
-
   const { date, startTime, endTime, title, description } = dataEvent;
 
   const startDateTime = getDateTime(date, startTime)
   const endDateTime = getDateTime(date, endTime)
 
   const eventObject = {
+    id: generateUniqueId(),
     title,
     description,
     start: startDateTime,

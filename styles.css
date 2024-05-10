@@ -60,7 +60,7 @@
 
 .header {
   display: flex;
-  padding: 25px 0 10px 30px;
+  padding: 40px 0 10px 30px;
 }
 .header__line {
   width: 100%;
@@ -123,6 +123,7 @@
 }
 .calendar__time-slot {
   display: flex;
+  position: relative;
   flex-direction: column;
   border-bottom: 0.5px solid #eee;
   flex-grow: 1;
@@ -174,6 +175,17 @@
   left: 12px;
   font-size: 12px;
   opacity: 0.5;
+}
+
+.event {
+  position: absolute;
+  width: 90%;
+  height: 100px;
+  padding: 10px;
+  color: #fff;
+  background-color: rgb(3, 155, 229);
+  z-index: 2;
+  border-radius: 5%;
 }
 
 * {
