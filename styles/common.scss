@@ -40,9 +40,14 @@
 }
 
 .popup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &__content {
     position: absolute;
     background: #fff;
+    width: 300px;
+    height: 200px;
     padding: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -51,4 +56,11 @@
 
 .hidden {
   display: none;
+}
+
+.delete-event-btn {
+  position: relative;
+  left: 200px;
+  top: 120px;
+  cursor: pointer;
 }

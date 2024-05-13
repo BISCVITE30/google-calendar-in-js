@@ -1,6 +1,7 @@
 import { getItem, setItem } from '../common/storage.js';
 import shmoment from '../common/shmoment.js';
 import { openPopup, closePopup } from '../common/popup.js';
+import { getEventList, deleteEvent } from '../common/gateway.js';
 
 const weekElem = document.querySelector('.calendar__week');
 const deleteEventBtn = document.querySelector('.delete-event-btn');
@@ -8,13 +9,21 @@ const deleteEventBtn = document.querySelector('.delete-event-btn');
 function handleEventClick(event) {
   // если произошел клик по событию, то нужно паказать попап с кнопкой удаления
   // установите eventIdToDelete с id события в storage
-  const clickOnEvent = event.target.value
-  console.log(clickOnEvent)
+  const clickOnEvent = event.target.closest('.event');
+  if (!clickOnEvent) {
+    return;
+  }
+
+  openPopup();
+  setItem('eventIdToDelete', clickOnEvent.id);
 }
 
 function removeEventsFromCalendar() {
   // ф-ция для удаления всех событий с календаря
+  const calendarEvents = document.querySelectorAll('.event');
+  calendarEvents.forEach((event) => event.remove())
 }
+
 
 const createEventElement = (event) => {
   // ф-ция создает DOM элемент события
@@ -29,11 +38,17 @@ const createEventElement = (event) => {
   eventElem.setAttribute('start', event.start);
   eventElem.setAttribute('end', event.end);
   eventElem.textContent = event.title;
+
+  const start = new Date(event.start);
+  const end = new Date(event.end);
+  const height = (end - start) / (1000 * 60);
+  eventElem.style.height = `${height}px`;
+
   return eventElem;
 };
 
 const currentWeekEvents = () => {
-  const eventsList = getItem('events');
+  const eventsList = getItem('events') || [];
   const weekEvents = [];
   eventsList.map((event) => {
     const currentWeekStart = new Date(getItem('displayedWeekStart'));
@@ -58,10 +73,9 @@ export const renderEvents = () => {
   // и вставляем туда событие
   // каждый день и временная ячейка должно содержать дата атрибуты, по которым можно будет найти нужную временную ячейку для события
   // не забудьте удалить с календаря старые события перед добавлением новых
+  removeEventsFromCalendar();
+  
   const weekEvents = currentWeekEvents();
-
-  const calendarEvents = document.querySelectorAll('.event');
-  calendarEvents.forEach((event) => event.remove());
 
   weekEvents.forEach((event) => {
     const eventElem = createEventElement(event);
@@ -69,8 +83,6 @@ export const renderEvents = () => {
     const startMinutes = new Date(event.start).getMinutes();
     const weekDay = new Date(event.start).getDate();
     eventElem.style.top = `${startMinutes}px`;
-
-    console.log(weekDay);
 
     const dayContainer = document.querySelector(
       `.calendar__day[data-day="${weekDay}"]`
@@ -93,6 +105,26 @@ function onDeleteEvent() {
   // удаляем из массива нужное событие и записываем в storage новый массив
   // закрыть попап
   // перерисовать события на странице в соответствии с новым списком событий в storage (renderEvents)
+
+  let events = getItem('events') || [];
+
+  const eventToDel = getItem('eventIdToDelete');
+  
+  events = events.filter(event => event.id !== eventToDel);
+
+  setItem('events', events);
+
+  deleteEvent(eventToDel)
+    .then(() => getEventList())
+    .then((newEventList) => {
+      setItem('events', newEventList);
+      renderEvents();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  closePopup();
 }
 
 deleteEventBtn.addEventListener('click', onDeleteEvent);

@@ -2,14 +2,14 @@ import { getItem, setItem } from '../common/storage.js';
 import { renderEvents } from './events.js';
 import { getDateTime } from '../common/time.utils.js';
 import { closeModal } from '../common/modal.js';
+import { createEvent, getEventList } from '../common/gateway.js';
 
 const eventFormElem = document.querySelector('.event-form');
 const childEventFormElem = eventFormElem.querySelectorAll('input, textarea');
 const closeEventFormBtn = document.querySelector('.create-event__close-btn');
 
 const generateUniqueId = () => {
-  const uniqueId = Math.random().toString(16).substr(2, 8);
-  return uniqueId;
+  return Date.now().toString();
 };
 
 function clearEventForm() {
@@ -25,7 +25,7 @@ function onCloseEventForm() {
   clearEventForm();
 }
 
-const onCreateEvent = (event) => {
+const onCreateEvent = async (event) => {
   // задача этой ф-ции только добавить новое событие в массив событий, что хранится в storage
   // создавать или менять DOM элементы здесь не нужно. Этим займутся другие ф-ции
   // при подтверждении формы нужно считать данные с формы
@@ -36,17 +36,12 @@ const onCreateEvent = (event) => {
   // закрываем форму
   // и запускаем перерисовку событий с помощью renderEvents
   event.preventDefault();
-  const dataEvent = [...new FormData(eventFormElem)].reduce(
-    (acc, [field, value]) => ({
-      ...acc,
-      [field]: value,
-    }),
-    {}
-  );
+  const dataEvent = Object.fromEntries(new FormData(eventFormElem));
+
   const { date, startTime, endTime, title, description } = dataEvent;
 
-  const startDateTime = getDateTime(date, startTime)
-  const endDateTime = getDateTime(date, endTime)
+  const startDateTime = getDateTime(date, startTime);
+  const endDateTime = getDateTime(date, endTime);
 
   const eventObject = {
     id: generateUniqueId(),
@@ -54,21 +49,29 @@ const onCreateEvent = (event) => {
     description,
     start: startDateTime,
     end: endDateTime,
-  }
+  };
 
-  if((eventObject.title === '') || (eventObject.description === '') || (eventObject.start === null) || (eventObject.end === null)){
+  if (
+    !title||
+    !description||
+    eventObject.start === null ||
+    eventObject.end === null
+  ) {
     alert('fill in the fields');
     return;
   }
 
-  const events = getItem('events') || [];
-  events.push(eventObject);
-  setItem('events', events);
-
-  onCloseEventForm();
-  clearEventForm();
+  try {
+  await createEvent(eventObject);
+  const newEventList = await getEventList();
+  setItem('events', newEventList);
   renderEvents();
-}
+  onCloseEventForm();
+
+  } catch (error) {
+    console.error(error)
+  }
+};
 
 export function initEventForm() {
   // подпишитесь на сабмит формы и на закрытие формы
