@@ -26,15 +26,6 @@ function onCloseEventForm() {
 }
 
 const onCreateEvent = async event => {
-  // задача этой ф-ции только добавить новое событие в массив событий, что хранится в storage
-  // создавать или менять DOM элементы здесь не нужно. Этим займутся другие ф-ции
-  // при подтверждении формы нужно считать данные с формы
-  // с формы вы получите поля date, startTime, endTime, title, description
-  // на основе полей date, startTime, endTime нужно посчитать дату начала и окончания события
-  // date, startTime, endTime - строки. Вам нужно с помощью getDateTime из утилит посчитать start и end объекта события
-  // полученное событие добавляем в массив событий, что хранится в storage
-  // закрываем форму
-  // и запускаем перерисовку событий с помощью renderEvents
   event.preventDefault();
   const dataEvent = Object.fromEntries(new FormData(eventFormElem));
 
@@ -68,7 +59,6 @@ const onCreateEvent = async event => {
 };
 
 export function initEventForm() {
-  // подпишитесь на сабмит формы и на закрытие формы
   eventFormElem.addEventListener('submit', onCreateEvent);
   closeEventFormBtn.addEventListener('click', onCloseEventForm);
 }

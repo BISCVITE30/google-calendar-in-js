@@ -7,15 +7,11 @@ const navElem = document.querySelector('.navigation');
 const displayedMonthElem = document.querySelector('.navigation__displayed-month');
 
 function renderCurrentMonth() {
-  // отрисовать месяц, к которому относиться текущая неделя (getDisplayedMonth)
-  // вставить в .navigation__displayed-month
   const displayedMonth = getDisplayedMonth(new Date());
   displayedMonthElem.textContent = displayedMonth;
 }
 
 const onChangeWeek = event => {
-  // при переключении недели обновите displayedWeekStart в storage
-  // и перерисуйте все необходимые элементы страницы (renderHeader, renderWeek, renderCurrentMonth)
   const direction = event.target.dataset.direction;
 
   if (direction === 'today') {
