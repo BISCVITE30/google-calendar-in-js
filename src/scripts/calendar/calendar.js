@@ -7,9 +7,11 @@ const generateDay = () => {
   // функция должна сгенерировать и вернуть разметку дня в виде строки
   // разметка состоит из 24 часовых временных слотов (.calendar__time-slot)
   const hourOfDay = createNumbersArray(0, 23);
-  return hourOfDay.map(hour => {
-    return `<div class='calendar__time-slot' data-time='${hour}'></div>`;
-  }).join('');
+  return hourOfDay
+    .map(hour => {
+      return `<div class='calendar__time-slot' data-time='${hour}'></div>`;
+    })
+    .join('');
 };
 
 export const renderWeek = () => {

@@ -18,7 +18,7 @@ export const renderHeader = () => {
   const calendarHeader = document.querySelector('.calendar__header');
   calendarHeader.innerHTML = '';
 
-  currentWeek.forEach((date) => {
+  currentWeek.forEach(date => {
     const dayLabel = document.createElement('div');
     dayLabel.classList.add('calendar__day-label', 'day-label');
 

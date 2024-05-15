@@ -21,11 +21,10 @@ function handleEventClick(event) {
 function removeEventsFromCalendar() {
   // ф-ция для удаления всех событий с календаря
   const calendarEvents = document.querySelectorAll('.event');
-  calendarEvents.forEach((event) => event.remove())
+  calendarEvents.forEach(event => event.remove());
 }
 
-
-const createEventElement = (event) => {
+const createEventElement = event => {
   // ф-ция создает DOM элемент события
   // событие должно позиционироваться абсолютно внутри нужной ячейки времени внутри дня
   // нужно добавить id события в дата атрибут
@@ -50,7 +49,7 @@ const createEventElement = (event) => {
 const currentWeekEvents = () => {
   const eventsList = getItem('events') || [];
   const weekEvents = [];
-  eventsList.map((event) => {
+  eventsList.map(event => {
     const currentWeekStart = new Date(getItem('displayedWeekStart'));
     const currentWeekEnd = new Date(currentWeekStart);
     currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
@@ -74,23 +73,21 @@ export const renderEvents = () => {
   // каждый день и временная ячейка должно содержать дата атрибуты, по которым можно будет найти нужную временную ячейку для события
   // не забудьте удалить с календаря старые события перед добавлением новых
   removeEventsFromCalendar();
-  
+
   const weekEvents = currentWeekEvents();
 
-  weekEvents.forEach((event) => {
+  weekEvents.forEach(event => {
     const eventElem = createEventElement(event);
     const startHour = new Date(event.start).getHours();
     const startMinutes = new Date(event.start).getMinutes();
     const weekDay = new Date(event.start).getDate();
     eventElem.style.top = `${startMinutes}px`;
 
-    const dayContainer = document.querySelector(
-      `.calendar__day[data-day="${weekDay}"]`
-    );
+    const dayContainer = document.querySelector(`.calendar__day[data-day="${weekDay}"]`);
 
     if (dayContainer) {
       const timeSlotElem = dayContainer.querySelector(
-        `.calendar__time-slot[data-time="${startHour}"]`
+        `.calendar__time-slot[data-time="${startHour}"]`,
       );
 
       if (timeSlotElem) {
@@ -109,18 +106,18 @@ function onDeleteEvent() {
   let events = getItem('events') || [];
 
   const eventToDel = getItem('eventIdToDelete');
-  
+
   events = events.filter(event => event.id !== eventToDel);
 
   setItem('events', events);
 
   deleteEvent(eventToDel)
     .then(() => getEventList())
-    .then((newEventList) => {
+    .then(newEventList => {
       setItem('events', newEventList);
       renderEvents();
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
     });
 

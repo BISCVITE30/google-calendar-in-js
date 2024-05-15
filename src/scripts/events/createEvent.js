@@ -14,8 +14,8 @@ const generateUniqueId = () => {
 
 function clearEventForm() {
   // ф-ция должна очистить поля формы от значений
-  childEventFormElem.forEach((element) =>
-    element.tagName === 'INPUT' || 'TEXTAREA' ? (element.value = '') : undefined
+  childEventFormElem.forEach(element =>
+    element.tagName === 'INPUT' || 'TEXTAREA' ? (element.value = '') : undefined,
   );
 }
 
@@ -25,7 +25,7 @@ function onCloseEventForm() {
   clearEventForm();
 }
 
-const onCreateEvent = async (event) => {
+const onCreateEvent = async event => {
   // задача этой ф-ции только добавить новое событие в массив событий, что хранится в storage
   // создавать или менять DOM элементы здесь не нужно. Этим займутся другие ф-ции
   // при подтверждении формы нужно считать данные с формы
@@ -51,25 +51,19 @@ const onCreateEvent = async (event) => {
     end: endDateTime,
   };
 
-  if (
-    !title||
-    !description||
-    eventObject.start === null ||
-    eventObject.end === null
-  ) {
+  if (!title || !description || eventObject.start === null || eventObject.end === null) {
     alert('fill in the fields');
     return;
   }
 
   try {
-  await createEvent(eventObject);
-  const newEventList = await getEventList();
-  setItem('events', newEventList);
-  renderEvents();
-  onCloseEventForm();
-
+    await createEvent(eventObject);
+    const newEventList = await getEventList();
+    setItem('events', newEventList);
+    renderEvents();
+    onCloseEventForm();
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };
 

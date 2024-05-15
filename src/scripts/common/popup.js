@@ -16,6 +16,5 @@ function onClickInsidePopup(event) {
   event.stopPropagation();
 }
 
-
 popupContentElem.addEventListener('click', onClickInsidePopup);
 popupElem.addEventListener('click', closePopup);

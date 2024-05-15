@@ -1,9 +1,17 @@
-## Calendar start code
+# Project: Google calendar
 
-## [Site link](https://biscvite30.github.io/google-calendar-in-js/)
+### [Site link](https://biscvite30.github.io/google-calendar-in-js/)
+
+Layout support desktop (up-to-1920) version
 
 ### To start:
 
-1. clone the repo
-2. install LTS [NodeJS](https://nodejs.org/en/)
-3. run `npm install` to to use eslint in the project
+- [HTML5](https://en.wikipedia.org/wiki/HTML5)
+- [CSS3](https://en.wikipedia.org/wiki/CSS)
+- [Sass (Scss)](https://sass-lang.com/)
+- [BEM methodology](https://en.bem.info/methodology/)
+- [JavaScript](https://en.wikipedia.org/wiki/JavaScript)
+
+### Author 
+
+- Panfil Nykohdiuk
