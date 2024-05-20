@@ -22,6 +22,7 @@ function removeEventsFromCalendar() {
 }
 
 const createEventElement = event => {
+
   const eventElem = document.createElement('div');
   eventElem.classList.add('event');
   eventElem.setAttribute('description', event.description);
@@ -29,7 +30,17 @@ const createEventElement = event => {
   eventElem.setAttribute('title', event.title);
   eventElem.setAttribute('start', event.start);
   eventElem.setAttribute('end', event.end);
-  eventElem.textContent = event.title;
+
+  const titleElem = document.createElement('div');
+  titleElem.classList.add('event__title')
+  titleElem.textContent = event.title;
+  
+  const descriptionElem = document.createElement('div');
+  descriptionElem.classList.add('event__description')
+  descriptionElem.textContent = event.description;
+
+  eventElem.append(titleElem ,descriptionElem);
+  console.log(eventElem);
 
   const start = new Date(event.start);
   const end = new Date(event.end);
@@ -84,7 +95,6 @@ export const renderEvents = () => {
 };
 
 function onDeleteEvent() {
-
   let events = getItem('events') || [];
 
   const eventToDel = getItem('eventIdToDelete');

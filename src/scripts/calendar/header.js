@@ -30,8 +30,7 @@ export const renderHeader = () => {
 
     dayLabel.append(dayName, dayNumber);
     calendarHeader.append(dayLabel);
-
-    if (date.getDate() === today.getDate()) {
+    if (date.toDateString() === today.toDateString()) {
       dayName.classList.add('day-name_current');
       dayNumber.classList.add('day-number_current');
     }

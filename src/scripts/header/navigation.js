@@ -6,8 +6,33 @@ import { getStartOfWeek, getDisplayedMonth } from '../common/time.utils.js';
 const navElem = document.querySelector('.navigation');
 const displayedMonthElem = document.querySelector('.navigation__displayed-month');
 
-function renderCurrentMonth() {
-  const displayedMonth = getDisplayedMonth(new Date());
+// function getDisplayedMonth(date) {
+//   const options = { month: 'short', year: 'numeric' };
+//   return date.toLocaleDateString('en-US', options);
+// }
+
+function renderCurrentMonth(startDate) {
+  const startOfWeek = new Date(startDate);
+  const endOfWeek = new Date(startDate);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+  const startMonth = startOfWeek.toLocaleDateString('en-US', { month: 'short' });
+  const startYear = startOfWeek.getFullYear();
+  const endMonth = endOfWeek.toLocaleDateString('en-US', { month: 'short' });
+  const endYear = endOfWeek.getFullYear();
+
+  let displayedMonth;
+
+  if(startYear === endYear) {
+    if( startMonth === endMonth) {
+      displayedMonth = `${startMonth} ${startYear}`;
+    } else {
+      displayedMonth = `${startMonth} - ${endMonth} ${startYear}`;
+    }
+  } else {
+    displayedMonth = `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+  }
+
   displayedMonthElem.textContent = displayedMonth;
 }
 
@@ -20,6 +45,7 @@ const onChangeWeek = event => {
     setItem('displayedWeekStart', startOfWeek.toISOString());
     renderHeader();
     renderWeek();
+    renderCurrentMonth(startOfWeek);
     return;
   }
 
@@ -39,13 +65,14 @@ const onChangeWeek = event => {
     setItem('displayedWeekStart', newWeekStart.toISOString());
     renderHeader();
     renderWeek();
-    renderCurrentMonth();
+    renderCurrentMonth(newWeekStart);
   } else {
     console.error("Value for 'displayedWeekStart' not found in storage.");
   }
 };
 
 export const initNavigation = () => {
-  renderCurrentMonth();
+  const displayedWeekStart = getItem('displayedWeekStart') || new Date();
+  renderCurrentMonth(new Date(displayedWeekStart));
   navElem.addEventListener('click', onChangeWeek);
 };
