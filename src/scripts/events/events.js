@@ -94,28 +94,26 @@ export const renderEvents = () => {
   });
 };
 
-function onDeleteEvent() {
+async function onDeleteEvent() {
   let events = getItem('events') || [];
 
   const eventToDel = getItem('eventIdToDelete');
 
   events = events.filter(event => event.id !== eventToDel);
-
   setItem('events', events);
 
-  deleteEvent(eventToDel)
-    .then(() => getEventList())
-    .then(newEventList => {
-      setItem('events', newEventList);
-      renderEvents();
-    })
-    .catch(error => {
+
+try{
+  await deleteEvent(eventToDel);
+  const newEventList = await getEventList();
+  setItem('events', newEventList);
+  renderEvents();
+  } catch {
       console.error(error);
-    });
+    }
 
   closePopup();
 }
 
 deleteEventBtn.addEventListener('click', onDeleteEvent);
-
 weekElem.addEventListener('click', handleEventClick);

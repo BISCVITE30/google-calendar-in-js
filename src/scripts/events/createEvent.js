@@ -62,3 +62,11 @@ export function initEventForm() {
   eventFormElem.addEventListener('submit', onCreateEvent);
   closeEventFormBtn.addEventListener('click', onCloseEventForm);
 }
+
+
+// createTask(newTask)
+//   .then(() => getTasksList())
+//   .then(newTasksList => {
+//     setItem('tasksList', newTasksList);
+//     renderTasks();
+//   });
