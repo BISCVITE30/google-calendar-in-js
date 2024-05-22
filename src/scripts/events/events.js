@@ -40,7 +40,6 @@ const createEventElement = event => {
   descriptionElem.textContent = event.description;
 
   eventElem.append(titleElem ,descriptionElem);
-  console.log(eventElem);
 
   const start = new Date(event.start);
   const end = new Date(event.end);

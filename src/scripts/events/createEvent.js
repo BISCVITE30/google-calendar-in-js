@@ -64,9 +64,3 @@ export function initEventForm() {
 }
 
 
-// createTask(newTask)
-//   .then(() => getTasksList())
-//   .then(newTasksList => {
-//     setItem('tasksList', newTasksList);
-//     renderTasks();
-//   });
