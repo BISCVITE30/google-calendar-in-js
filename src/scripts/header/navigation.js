@@ -1,78 +1,49 @@
 import { getItem, setItem } from '../common/storage.js';
 import { renderWeek } from '../calendar/calendar.js';
 import { renderHeader } from '../calendar/header.js';
-import { getStartOfWeek, getDisplayedMonth } from '../common/time.utils.js';
+import { getStartOfWeek } from '../common/time.utils.js';
 
 const navElem = document.querySelector('.navigation');
 const displayedMonthElem = document.querySelector('.navigation__displayed-month');
 
-// function getDisplayedMonth(date) {
-//   const options = { month: 'short', year: 'numeric' };
-//   return date.toLocaleDateString('en-US', options);
-// }
-
-function renderCurrentMonth(startDate) {
-  const startOfWeek = new Date(startDate);
+const renderCurrentMonth = startDate => {
   const endOfWeek = new Date(startDate);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setDate(endOfWeek.getDate() + 6);
 
-  const startMonth = startOfWeek.toLocaleDateString('en-US', { month: 'short' });
-  const startYear = startOfWeek.getFullYear();
-  const endMonth = endOfWeek.toLocaleDateString('en-US', { month: 'short' });
-  const endYear = endOfWeek.getFullYear();
+  const [startMonth, startYear] = startDate
+    .toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    .split(' ');
+  const [endMonth, endYear] = endOfWeek
+    .toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    .split(' ');
 
-  let displayedMonth;
-
-  if(startYear === endYear) {
-    if( startMonth === endMonth) {
-      displayedMonth = `${startMonth} ${startYear}`;
-    } else {
-      displayedMonth = `${startMonth} - ${endMonth} ${startYear}`;
-    }
-  } else {
-    displayedMonth = `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
-  }
-
-  displayedMonthElem.textContent = displayedMonth;
-}
+  displayedMonthElem.textContent =
+    startYear === endYear
+      ? startMonth === endMonth
+        ? `${startMonth} ${startYear}`
+        : `${startMonth} - ${endMonth} ${startYear}`
+      : `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+};
 
 const onChangeWeek = event => {
   const direction = event.target.dataset.direction;
+  const currentWeekStart = new Date(getItem('displayedWeekStart') || new Date());
 
-  if (direction === 'today') {
-    const today = new Date();
-    const startOfWeek = getStartOfWeek(today);
-    setItem('displayedWeekStart', startOfWeek.toISOString());
-    renderHeader();
-    renderWeek();
-    renderCurrentMonth(startOfWeek);
-    return;
-  }
+  const newWeekStart =
+    direction === 'today'
+      ? getStartOfWeek(new Date())
+      : new Date(
+          currentWeekStart.setDate(currentWeekStart.getDate() + (direction === 'prev' ? -7 : 7)),
+        );
 
-  const currentWeekStart = getItem('displayedWeekStart');
-
-  if (currentWeekStart) {
-    let newWeekStart;
-
-    if (direction === 'prev') {
-      newWeekStart = new Date(currentWeekStart);
-      newWeekStart.setDate(newWeekStart.getDate() - 7);
-    } else if (direction === 'next') {
-      newWeekStart = new Date(currentWeekStart);
-      newWeekStart.setDate(newWeekStart.getDate() + 7);
-    }
-
-    setItem('displayedWeekStart', newWeekStart.toISOString());
-    renderHeader();
-    renderWeek();
-    renderCurrentMonth(newWeekStart);
-  } else {
-    console.error("Value for 'displayedWeekStart' not found in storage.");
-  }
+  setItem('displayedWeekStart', newWeekStart.toISOString());
+  renderHeader();
+  renderWeek();
+  renderCurrentMonth(newWeekStart);
 };
 
 export const initNavigation = () => {
-  const displayedWeekStart = getItem('displayedWeekStart') || new Date();
-  renderCurrentMonth(new Date(displayedWeekStart));
+  const displayedWeekStart = new Date(getItem('displayedWeekStart') || new Date());
+  renderCurrentMonth(displayedWeekStart);
   navElem.addEventListener('click', onChangeWeek);
 };

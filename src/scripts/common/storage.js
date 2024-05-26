@@ -2,7 +2,6 @@ export const setItem = (key, value) => localStorage.setItem(key, JSON.stringify(
 
 export const getItem = key => JSON.parse(localStorage.getItem(key)) || [];
 
-// пример объекта события
 const eventExample = {
   id: 0.7520027086457333,
   title: 'Title',

@@ -14,26 +14,17 @@ const generateDay = () => {
 
 export const renderWeek = () => {
   const displayedWeekStart = getItem('displayedWeekStart');
-
-  if (displayedWeekStart === null) {
-    return;
-  }
+  if (!displayedWeekStart) return;
 
   const currentWeek = generateWeekRange(displayedWeekStart);
-
   const calendarWeekElem = document.querySelector('.calendar__week');
-
   calendarWeekElem.innerHTML = '';
 
-  currentWeek.forEach((day, index) => {
+  currentWeek.forEach(day => {
     const dayElem = document.createElement('div');
     dayElem.classList.add('calendar__day');
     dayElem.dataset.day = day.getDate();
-
-    const dayMarkup = generateDay();
-
-    dayElem.innerHTML = dayMarkup;
-
+    dayElem.innerHTML = generateDay()
     calendarWeekElem.appendChild(dayElem);
   });
 

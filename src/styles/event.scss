@@ -1,4 +1,3 @@
-// стили отображаемого в календаре события
 .event {
   position: absolute;
   display: flex;
@@ -7,7 +6,7 @@
   height: 100px;
   padding: 10px 5px;
   color: #fff;
-  background-color: rgb(3, 155, 229);
+  background-color: #039be5;
   z-index: 2;
   border-radius: 10px;
   border-bottom: 1px solid #fff;
