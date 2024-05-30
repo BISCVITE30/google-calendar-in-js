@@ -1,7 +1,7 @@
-import { getItem, setItem } from '../common/storage.js';
 import { renderWeek } from '../calendar/calendar.js';
 import { renderHeader } from '../calendar/header.js';
 import { getStartOfWeek } from '../common/time.utils.js';
+import { setDisplayedWeekStart, fetchDisplayedWeekStart, createEvent } from '../common/gateway.js';
 
 const navElem = document.querySelector('.navigation');
 const displayedMonthElem = document.querySelector('.navigation__displayed-month');
@@ -25,9 +25,9 @@ const renderCurrentMonth = startDate => {
       : `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
 };
 
-const onChangeWeek = event => {
+const onChangeWeek = async event => {
   const direction = event.target.dataset.direction;
-  const currentWeekStart = new Date(getItem('displayedWeekStart') || new Date());
+  const currentWeekStart = new Date(await fetchDisplayedWeekStart()) || new Date();
 
   const newWeekStart =
     direction === 'today'
@@ -36,14 +36,21 @@ const onChangeWeek = event => {
           currentWeekStart.setDate(currentWeekStart.getDate() + (direction === 'prev' ? -7 : 7)),
         );
 
-  setItem('displayedWeekStart', newWeekStart.toISOString());
+  await createEvent(newWeekStart.toISOString());
   renderHeader();
   renderWeek();
   renderCurrentMonth(newWeekStart);
 };
 
-export const initNavigation = () => {
-  const displayedWeekStart = new Date(getItem('displayedWeekStart') || new Date());
+export const initNavigation = async () => {
+  let displayedWeekStart = new Date();
+
+  try {
+    displayedWeekStart = await fetchDisplayedWeekStart();
+  } catch (error) {
+    console.error(error);
+  }
+
   renderCurrentMonth(displayedWeekStart);
   navElem.addEventListener('click', onChangeWeek);
 };

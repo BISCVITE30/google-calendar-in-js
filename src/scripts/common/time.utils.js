@@ -42,6 +42,8 @@ const monthsNames = [
   'Dec',
 ];
 
+export const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
 export const getDisplayedMonth = date => {
   const weekStart = getStartOfWeek(date);
   const weekEnd = shmoment(date).add('days', 6).result();

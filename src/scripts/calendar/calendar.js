@@ -1,7 +1,7 @@
-import { getItem } from '../common/storage.js';
 import { generateWeekRange } from '../common/time.utils.js';
 import { renderEvents } from '../events/events.js';
-import { createNumbersArray } from '../common/createNumbersArray.js';
+import { createNumbersArray } from '../common/utils.js';
+import { fetchDisplayedWeekStart } from '../common/gateway.js';
 
 const generateDay = () => {
   const hourOfDay = createNumbersArray(0, 23);
@@ -12,8 +12,8 @@ const generateDay = () => {
     .join('');
 };
 
-export const renderWeek = () => {
-  const displayedWeekStart = getItem('displayedWeekStart');
+export const renderWeek = async () => {
+  const displayedWeekStart = await fetchDisplayedWeekStart() || new Date();
   if (!displayedWeekStart) return;
 
   const currentWeek = generateWeekRange(displayedWeekStart);
@@ -24,7 +24,7 @@ export const renderWeek = () => {
     const dayElem = document.createElement('div');
     dayElem.classList.add('calendar__day');
     dayElem.dataset.day = day.getDate();
-    dayElem.innerHTML = generateDay()
+    dayElem.innerHTML = generateDay();
     calendarWeekElem.appendChild(dayElem);
   });
 

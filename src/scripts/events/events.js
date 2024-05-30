@@ -1,16 +1,14 @@
-import { getItem, setItem } from '../common/storage.js';
-import shmoment from '../common/shmoment.js';
 import { openPopup, closePopup } from '../common/popup.js';
-import { getEventList, deleteEvent } from '../common/gateway.js';
+import { getEventList, deleteEvent, createEvent, fetchDisplayedWeekStart, fetchDeleteId } from '../common/gateway.js';
 
 const weekElem = document.querySelector('.calendar__week');
 const deleteEventBtn = document.querySelector('.delete-event-btn');
 
-const handleEventClick = event => {
+const handleEventClick = async event => {
   const clickOnEvent = event.target.closest('.event');
   if (clickOnEvent) {
     openPopup();
-    setItem('eventIdToDelete', clickOnEvent.id);
+    await deleteEvent(clickOnEvent.id);
   }
 };
 
@@ -35,23 +33,23 @@ const createEventElement = event => {
   return eventElem;
 };
 
-const currentWeekEvents = () => {
-  const eventsList = getItem('events') || [];
-  const currentWeekStart = new Date(getItem('displayedWeekStart'));
+const currentWeekEvents = async () => {
+  const eventsList = (await getEventList()) || [];
+  const currentWeekStart = new Date(await fetchDisplayedWeekStart() || new Date());
   const currentWeekEnd = new Date(currentWeekStart);
   currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
 
-  return eventsList.filter(event => {
+  return eventsList.filter( event => {
     const eventStart = new Date(event.start);
     const eventEnd = new Date(event.end);
     return eventStart >= currentWeekStart && eventEnd <= currentWeekEnd;
   });
 };
 
-export const renderEvents = () => {
+export const renderEvents = async () => {
   removeEventsFromCalendar();
-
-  currentWeekEvents().forEach(event => {
+  const eventsOnWeek = await currentWeekEvents();
+  return eventsOnWeek.forEach(event => {
     const eventElem = createEventElement(event);
     const start = new Date(event.start);
     eventElem.style.top = `${start.getMinutes()}px`;
@@ -67,16 +65,14 @@ export const renderEvents = () => {
 };
 
 const onDeleteEvent = async () => {
-  const eventToDel = getItem('eventIdToDelete');
-  setItem(
-    'events',
-    (getItem('events') || []).filter(event => event.id !== eventToDel),
-  );
+  const eventToDel = await fetchDeleteId();
+  const eventList = await getEventList();
+  createEvent(eventList.filter(event => event.id !== eventToDel));
 
   try {
     await deleteEvent(eventToDel);
     const newEventList = await getEventList();
-    setItem('events', newEventList);
+    createEvent(newEventList);
     renderEvents();
   } catch (error) {
     console.error(error);

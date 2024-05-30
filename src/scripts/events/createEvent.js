@@ -1,4 +1,3 @@
-import { getItem, setItem } from '../common/storage.js';
 import { renderEvents } from './events.js';
 import { getDateTime } from '../common/time.utils.js';
 import { closeModal } from '../common/modal.js';
@@ -24,8 +23,8 @@ const onCreateEvent = async event => {
   const dataEvent = Object.fromEntries(new FormData(eventFormElem));
   const { date, startTime, endTime, title, description } = dataEvent;
 
-  if (!title || !description || !startTime || !endTime) {
-    alert('fill in the fields');
+  if (!title || !description || !date || !startTime || !endTime) {
+    alert('Fill in the fields');
     return;
   }
 
@@ -39,7 +38,7 @@ const onCreateEvent = async event => {
 
   try {
     await createEvent(eventObject);
-    setItem('events', await getEventList());
+    createEvent(await getEventList())
     renderEvents();
     onCloseEventForm();
   } catch (error) {

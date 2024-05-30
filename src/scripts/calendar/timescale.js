@@ -1,4 +1,4 @@
-import { createNumbersArray } from '../common/createNumbersArray.js';
+import { createNumbersArray } from '../common/utils.js';
 
 export const renderTimescale = () => {
   const timeScaleElem = document.querySelector('.calendar__time-scale');
@@ -18,7 +18,6 @@ export const renderTimescale = () => {
     timeSlot.append(timeSlotTime);
     timeScaleElem.append(timeSlot);
   });
-
 };
 
 renderTimescale();

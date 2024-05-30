@@ -1,5 +1,5 @@
 const modalElem = document.querySelector('.modal');
-const modalContentElem = document.querySelector('.modal__content');
+
 export const openModal = () => {
   modalElem.classList.remove('hidden');
 };
