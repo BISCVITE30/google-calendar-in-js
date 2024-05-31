@@ -4,41 +4,46 @@ import { closeModal } from '../common/modal.js';
 import { createEvent, getEventList } from '../common/gateway.js';
 
 const eventFormElem = document.querySelector('.event-form');
-const childEventFormElems = eventFormElem.querySelectorAll('input, textarea');
+const formElem = document.querySelector('.event-form');
+formElem.reset();
 const closeEventFormBtn = document.querySelector('.create-event__close-btn');
 
-const generateUniqueId = () => Date.now().toString();
+const generateUniqueId = () => {
+  return Date.now().toString();
+};
 
 const clearEventForm = () => {
-  childEventFormElems.forEach(element => (element.value = ''));
-};
+  formElem.reset();
+}
 
 const onCloseEventForm = () => {
   closeModal();
   clearEventForm();
-};
+}
 
 const onCreateEvent = async event => {
   event.preventDefault();
-  const dataEvent = Object.fromEntries(new FormData(eventFormElem));
-  const { date, startTime, endTime, title, description } = dataEvent;
+  const { date, startTime, endTime, title, description } = Object.fromEntries(new FormData(eventFormElem));
 
-  if (!title || !description || !date || !startTime || !endTime) {
-    alert('Fill in the fields');
-    return;
-  }
+  const startDateTime = getDateTime(date, startTime);
+  const endDateTime = getDateTime(date, endTime);
 
   const eventObject = {
     id: generateUniqueId(),
     title,
     description,
-    start: getDateTime(date, startTime),
-    end: getDateTime(date, endTime),
+    start: startDateTime,
+    end: endDateTime,
   };
+
+  if (!title || !description || !eventObject.start || !eventObject.end) {
+    alert('fill in the fields');
+    return;
+  }
 
   try {
     await createEvent(eventObject);
-    createEvent(await getEventList())
+    await getEventList();
     renderEvents();
     onCloseEventForm();
   } catch (error) {
@@ -49,4 +54,4 @@ const onCreateEvent = async event => {
 export const initEventForm = () => {
   eventFormElem.addEventListener('submit', onCreateEvent);
   closeEventFormBtn.addEventListener('click', onCloseEventForm);
-};
+}

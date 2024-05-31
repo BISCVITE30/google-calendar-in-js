@@ -1,85 +1,115 @@
 import { openPopup, closePopup } from '../common/popup.js';
-import { getEventList, deleteEvent, createEvent, fetchDisplayedWeekStart, fetchDeleteId } from '../common/gateway.js';
+import { getEventList, deleteEvent, createEvent } from '../common/gateway.js';
+import { storage } from '../common/storage.js';
 
 const weekElem = document.querySelector('.calendar__week');
 const deleteEventBtn = document.querySelector('.delete-event-btn');
 
-const handleEventClick = async event => {
+const handleEventClick = (event) => {
   const clickOnEvent = event.target.closest('.event');
-  if (clickOnEvent) {
-    openPopup();
-    await deleteEvent(clickOnEvent.id);
+  if (!clickOnEvent) {
+    return;
   }
-};
+
+  openPopup();
+  storage.eventIdToDelete = clickOnEvent.id
+}
 
 const removeEventsFromCalendar = () => {
-  document.querySelectorAll('.event').forEach(event => event.remove());
-};
+  const calendarEvents = document.querySelectorAll('.event');
+  calendarEvents.forEach(event => event.remove());
+}
 
 const createEventElement = event => {
-  const { id, title, description, start, end } = event;
   const eventElem = document.createElement('div');
-  eventElem.className = 'event';
-  eventElem.id = id;
-  eventElem.title = title;
-  eventElem.setAttribute('description', description);
-  eventElem.setAttribute('start', start);
-  eventElem.setAttribute('end', end);
+  eventElem.classList.add('event');
+  eventElem.setAttribute('description', event.description);
+  eventElem.setAttribute('id', event.id);
+  eventElem.setAttribute('title', event.title);
+  eventElem.setAttribute('start', event.start);
+  eventElem.setAttribute('end', event.end);
 
-  eventElem.innerHTML = `<div class="event__title">${title}</div>
-                         <div class="event__description">${description}</div>`;
+  const titleElem = document.createElement('div');
+  titleElem.classList.add('event__title');
+  titleElem.textContent = event.title;
 
-  eventElem.style.height = `${(new Date(end) - new Date(start)) / 60000}px`;
+  const descriptionElem = document.createElement('div');
+  descriptionElem.classList.add('event__description');
+  descriptionElem.textContent = event.description;
+
+  eventElem.append(titleElem, descriptionElem);
+
+  const start = new Date(event.start);
+  const end = new Date(event.end);
+  const height = (end - start) / (1000 * 60);
+  eventElem.style.height = `${height}px`;
+
   return eventElem;
 };
 
 const currentWeekEvents = async () => {
-  const eventsList = (await getEventList()) || [];
-  const currentWeekStart = new Date(await fetchDisplayedWeekStart() || new Date());
-  const currentWeekEnd = new Date(currentWeekStart);
-  currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+  const eventsList = await getEventList() || [];
+  const weekEvents = [];
+  eventsList.map(event => {
+    const currentWeekStart = new Date(storage.displayedWeekStart);
+    const currentWeekEnd = new Date(currentWeekStart);
+    currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
 
-  return eventsList.filter( event => {
     const eventStart = new Date(event.start);
     const eventEnd = new Date(event.end);
-    return eventStart >= currentWeekStart && eventEnd <= currentWeekEnd;
+
+    if (eventStart >= currentWeekStart && eventEnd <= currentWeekEnd) {
+      weekEvents.push(event);
+    }
   });
+  return weekEvents;
 };
 
 export const renderEvents = async () => {
   removeEventsFromCalendar();
-  const eventsOnWeek = await currentWeekEvents();
-  return eventsOnWeek.forEach(event => {
+
+  const weekEvents = await currentWeekEvents();
+
+  weekEvents.forEach(event => {
     const eventElem = createEventElement(event);
-    const start = new Date(event.start);
-    eventElem.style.top = `${start.getMinutes()}px`;
+    const startHour = new Date(event.start).getHours();
+    const startMinutes = new Date(event.start).getMinutes();
+    const weekDay = new Date(event.start).getDate();
+    eventElem.style.top = `${startMinutes}px`;
 
-    const timeSlotElem = document.querySelector(
-      `.calendar__day[data-day="${start.getDate()}"] .calendar__time-slot[data-time="${start.getHours()}"]`,
-    );
+    const dayContainer = document.querySelector(`.calendar__day[data-day="${weekDay}"]`);
 
-    if (timeSlotElem) {
-      timeSlotElem.append(eventElem);
+    if (dayContainer) {
+      const timeSlotElem = dayContainer.querySelector(
+        `.calendar__time-slot[data-time="${startHour}"]`,
+      );
+
+      if (timeSlotElem) {
+        timeSlotElem.append(eventElem);
+      }
     }
   });
 };
 
 const onDeleteEvent = async () => {
-  const eventToDel = await fetchDeleteId();
-  const eventList = await getEventList();
-  createEvent(eventList.filter(event => event.id !== eventToDel));
+  let events = await getEventList() || [];
+
+  const eventToDel = storage.eventIdToDelete;
+
+  events = events.filter(event => event.id !== eventToDel);
+  await getEventList();
 
   try {
-    await deleteEvent(eventToDel);
-    const newEventList = await getEventList();
+    deleteEvent(eventToDel);
+    const newEventList = getEventList();
     createEvent(newEventList);
     renderEvents();
-  } catch (error) {
+  } catch {
     console.error(error);
   }
 
   closePopup();
-};
+}
 
 deleteEventBtn.addEventListener('click', onDeleteEvent);
 weekElem.addEventListener('click', handleEventClick);

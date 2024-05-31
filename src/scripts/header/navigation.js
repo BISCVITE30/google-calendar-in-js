@@ -1,56 +1,57 @@
 import { renderWeek } from '../calendar/calendar.js';
 import { renderHeader } from '../calendar/header.js';
 import { getStartOfWeek } from '../common/time.utils.js';
-import { setDisplayedWeekStart, fetchDisplayedWeekStart, createEvent } from '../common/gateway.js';
+import { storage } from '../common/storage.js';
 
 const navElem = document.querySelector('.navigation');
 const displayedMonthElem = document.querySelector('.navigation__displayed-month');
 
 const renderCurrentMonth = startDate => {
+  const startOfWeek = new Date(startDate);
   const endOfWeek = new Date(startDate);
-  endOfWeek.setDate(endOfWeek.getDate() + 6);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-  const [startMonth, startYear] = startDate
-    .toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-    .split(' ');
-  const [endMonth, endYear] = endOfWeek
-    .toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-    .split(' ');
+  const formatDate = date =>
+    date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).split(' ');
+  const [startMonth, startYear] = formatDate(startOfWeek);
+  const [endMonth, endYear] = formatDate(endOfWeek);
 
-  displayedMonthElem.textContent =
+  const displayedMonth =
     startYear === endYear
       ? startMonth === endMonth
         ? `${startMonth} ${startYear}`
         : `${startMonth} - ${endMonth} ${startYear}`
       : `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+
+  displayedMonthElem.textContent = displayedMonth;
 };
 
-const onChangeWeek = async event => {
+const onChangeWeek = event => {
   const direction = event.target.dataset.direction;
-  const currentWeekStart = new Date(await fetchDisplayedWeekStart()) || new Date();
+  let newWeekStart;
 
-  const newWeekStart =
-    direction === 'today'
-      ? getStartOfWeek(new Date())
-      : new Date(
-          currentWeekStart.setDate(currentWeekStart.getDate() + (direction === 'prev' ? -7 : 7)),
-        );
+  if (direction === 'today') {
+    newWeekStart = getStartOfWeek(new Date());
+  } else {
+    const currentWeekStart = new Date(storage.displayedWeekStart);
 
-  await createEvent(newWeekStart.toISOString());
+    if (!currentWeekStart) {
+      console.error(`Value for 'displayedWeekStart' not found in storage`);
+      return;
+    }
+
+    newWeekStart = new Date(currentWeekStart);
+    newWeekStart.setDate(newWeekStart.getDate() + (direction === 'prev' ? -7 : 7));
+  }
+
+  storage.displayedWeekStart = newWeekStart.toISOString();
   renderHeader();
   renderWeek();
   renderCurrentMonth(newWeekStart);
 };
 
-export const initNavigation = async () => {
-  let displayedWeekStart = new Date();
-
-  try {
-    displayedWeekStart = await fetchDisplayedWeekStart();
-  } catch (error) {
-    console.error(error);
-  }
-
-  renderCurrentMonth(displayedWeekStart);
+export const initNavigation = () => {
+  const displayedWeekStart = storage.displayedWeekStart.toISOString() || new Date();
+  renderCurrentMonth(new Date(displayedWeekStart));
   navElem.addEventListener('click', onChangeWeek);
 };
