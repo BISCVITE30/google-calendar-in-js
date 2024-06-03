@@ -101,8 +101,7 @@ const onDeleteEvent = async () => {
 
   try {
     deleteEvent(eventToDel);
-    const newEventList = getEventList();
-    createEvent(newEventList);
+    getEventList();
     renderEvents();
   } catch {
     console.error(error);
