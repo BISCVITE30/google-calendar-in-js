@@ -43,7 +43,6 @@ const onCreateEvent = async event => {
 
   try {
     await createEvent(eventObject);
-    await getEventList();
     renderEvents();
     onCloseEventForm();
   } catch (error) {
