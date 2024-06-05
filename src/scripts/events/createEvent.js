@@ -1,11 +1,9 @@
 import { renderEvents } from './events.js';
 import { getDateTime } from '../common/time.utils.js';
 import { closeModal } from '../common/modal.js';
-import { createEvent, getEventList } from '../common/gateway.js';
+import { createEvent } from '../common/gateway.js';
 
-const eventFormElem = document.querySelector('.event-form');
 const formElem = document.querySelector('.event-form');
-formElem.reset();
 const closeEventFormBtn = document.querySelector('.create-event__close-btn');
 
 const generateUniqueId = () => {
@@ -23,7 +21,7 @@ const onCloseEventForm = () => {
 
 const onCreateEvent = async event => {
   event.preventDefault();
-  const { date, startTime, endTime, title, description } = Object.fromEntries(new FormData(eventFormElem));
+  const { date, startTime, endTime, title, description } = Object.fromEntries(new FormData(formElem));
 
   const startDateTime = getDateTime(date, startTime);
   const endDateTime = getDateTime(date, endTime);
@@ -51,6 +49,6 @@ const onCreateEvent = async event => {
 };
 
 export const initEventForm = () => {
-  eventFormElem.addEventListener('submit', onCreateEvent);
+  formElem.addEventListener('submit', onCreateEvent);
   closeEventFormBtn.addEventListener('click', onCloseEventForm);
 }

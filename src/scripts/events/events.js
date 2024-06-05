@@ -1,24 +1,24 @@
 import { openPopup, closePopup } from '../common/popup.js';
-import { getEventList, deleteEvent, createEvent } from '../common/gateway.js';
+import { getEventList, deleteEvent } from '../common/gateway.js';
 import { storage } from '../common/storage.js';
 
 const weekElem = document.querySelector('.calendar__week');
 const deleteEventBtn = document.querySelector('.delete-event-btn');
 
-const handleEventClick = (event) => {
+const handleEventClick = event => {
   const clickOnEvent = event.target.closest('.event');
   if (!clickOnEvent) {
     return;
   }
 
   openPopup();
-  storage.eventIdToDelete = clickOnEvent.id
-}
+  storage.eventIdToDelete = clickOnEvent.id;
+};
 
 const removeEventsFromCalendar = () => {
   const calendarEvents = document.querySelectorAll('.event');
   calendarEvents.forEach(event => event.remove());
-}
+};
 
 const createEventElement = event => {
   const eventElem = document.createElement('div');
@@ -48,9 +48,8 @@ const createEventElement = event => {
 };
 
 const currentWeekEvents = async () => {
-  const eventsList = await getEventList() || [];
-  const weekEvents = [];
-  eventsList.map(event => {
+  const eventsList = (await getEventList()) || [];
+  const weekEvents = eventsList.filter(event => {
     const currentWeekStart = new Date(storage.displayedWeekStart);
     const currentWeekEnd = new Date(currentWeekStart);
     currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
@@ -58,9 +57,7 @@ const currentWeekEvents = async () => {
     const eventStart = new Date(event.start);
     const eventEnd = new Date(event.end);
 
-    if (eventStart >= currentWeekStart && eventEnd <= currentWeekEnd) {
-      weekEvents.push(event);
-    }
+    return eventStart >= currentWeekStart && eventEnd <= currentWeekEnd
   });
   return weekEvents;
 };
@@ -92,15 +89,8 @@ export const renderEvents = async () => {
 };
 
 const onDeleteEvent = async () => {
-  let events = await getEventList() || [];
-
-  const eventToDel = storage.eventIdToDelete;
-
-  events = events.filter(event => event.id !== eventToDel);
-  await getEventList();
-
   try {
-    deleteEvent(eventToDel);
+    deleteEvent(storage.eventIdToDelete);
     getEventList();
     renderEvents();
   } catch {
@@ -108,7 +98,7 @@ const onDeleteEvent = async () => {
   }
 
   closePopup();
-}
+};
 
 deleteEventBtn.addEventListener('click', onDeleteEvent);
 weekElem.addEventListener('click', handleEventClick);
