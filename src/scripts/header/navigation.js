@@ -3,8 +3,8 @@ import { renderHeader } from '../calendar/header.js';
 import { getStartOfWeek } from '../common/time.utils.js';
 import { storage } from '../common/storage.js';
 
-const navElem = document.querySelector('.navigation');
-const displayedMonthElem = document.querySelector('.navigation__displayed-month');
+const navElem = document.querySelector('.nav');
+const displayedMonthElem = document.querySelector('.nav__displayed-month');
 
 const renderCurrentMonth = startDate => {
   const startOfWeek = new Date(startDate);
@@ -22,7 +22,7 @@ const renderCurrentMonth = startDate => {
         ? `${startMonth} ${startYear}`
         : `${startMonth} - ${endMonth} ${startYear}`
       : `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
-
+  
   displayedMonthElem.textContent = displayedMonth;
 };
 
