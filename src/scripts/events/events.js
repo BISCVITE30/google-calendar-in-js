@@ -90,8 +90,7 @@ export const renderEvents = async () => {
 
 const onDeleteEvent = async () => {
   try {
-    deleteEvent(storage.eventIdToDelete);
-    getEventList();
+    await deleteEvent(storage.eventIdToDelete);
     renderEvents();
   } catch {
     console.error(error);
